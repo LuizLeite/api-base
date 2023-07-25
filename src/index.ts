@@ -1,8 +1,10 @@
 import express from "express";
 import { Request, Response } from "express";
-import Person from "@/person";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
+
 // middlewares
 app.use(
   express.urlencoded({
@@ -12,12 +14,14 @@ app.use(
 
 app.use(express.json());
 
-const person = new Person();
-const hw = `Hello world ${person.sayName()}`;
-console.log(hw);
+setInterval(() => {
+  const myEnv = dotenv.config();
+  process.env.PORT = String(myEnv?.parsed?.PORT);
+  console.log("PORT:", process.env.PORT);
+}, 5000);
 
 app.get("/", (req: Request, res: Response) => {
-  res.status(201).json({ message: hw });
+  res.status(200).json({ message: "ok" });
 });
 
-app.listen(3000, () => console.log("Listening on port 3000!"));
+app.listen(3000, () => console.log(`Listening on port ${process.env.PORT}!`));
