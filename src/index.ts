@@ -7,8 +7,8 @@
  */
 
 import express from "express";
-import { Request, Response } from "express";
 import { loadEnvs, connectMongo, getPackageJson } from "./util";
+import rootRoute from "./routes/_root";
 import healthRoute from "./routes/health";
 
 loadEnvs();
@@ -21,16 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // endpoints
+app.use("/", rootRoute);
 app.use("/actuator", healthRoute);
-
-// optional - used to browser response
-app.get("/", (req: Request, res: Response) => {
-  res
-    .status(200)
-    .send(
-      `Welcome to a <b>api-base-node</b> - version: ${getPackageJson().version}`
-    );
-});
 
 app.listen(process.env.PORT, () =>
   console.log(
