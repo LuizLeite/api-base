@@ -30,6 +30,7 @@ export async function checkMongo(checkMongo = false): Promise<string> {
       } else {
         resp = "MongoDB is ok, but users is empty";
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       resp = `Error: ${error.message}`;
       logger.error(resp);
@@ -64,6 +65,7 @@ export async function checkPostgre(checkPostgres = false): Promise<string> {
       } else {
         resp = "Poll and Client not running";
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       resp = `Error: ${error.message}`;
       logger.error(resp);
@@ -89,32 +91,33 @@ export async function checkOracle(checkOracle = false): Promise<string> {
         password: process.env.AERO_PASS,
         connectString: process.env.AERO_HOST,
       };
-      // console.log("AERO_HOST:", process.env.AERO_HOST);
-      // console.log("AERO_USER:", process.env.AERO_USER);
-      // console.log("AERO_PASS:", process.env.AERO_PASS);
+      if (!process.env.LD_LIBRARY_PATH) {
+        const err =
+          "Cannot find LD_LIBRARY_PATH. run export LD_LIBRARY_PATH=/opt/oracle/instantclient_21_11";
+        logger.error(err);
+        return err;
+      }
       await oracledb.initOracleClient();
       conn = await oracledb.getConnection(options);
-      console.log("passei 2");
-      await conn.execute(
-        "select VEHICLE_ID from VEHICLES WHERE VEHICLE_ID = 571809"
-      );
-      console.log("passei 3");
-      const result = await conn.execute(
-        `select description, done from todoitem`,
-        [],
-        { resultSet: true, outFormat: oracledb.OUT_FORMAT_OBJECT }
-      );
-      console.log("passei 4");
-      const rs = result.resultSet;
-      console.log("passei 5");
-      if (rs) {
-        let row: any = null;
-        while ((row = await rs.getRow())) {
-          if (row.DONE) console.log(row.DESCRIPTION, "is done");
-          else console.log(row.DESCRIPTION, "is NOT done");
-        }
-        await rs.close();
-      }
+      const result = await conn.execute("SELECT CURRENT_DATE FROM DUAL");
+      if (result?.rows?.length) resp = "Oracle running OK";
+
+      // const result2 = await conn.execute(
+      //   "select VEHICLE_ID from AERO.VEHICLES WHERE VEHICLE_ID = 571809",
+      //   [],
+      //   { resultSet: true, outFormat: oracledb.OUT_FORMAT_OBJECT }
+      // );
+      // const rs = await result2.resultSet;
+      // if (rs) {
+      //   let row: any = null;
+      //   while ((row = await rs.getRow())) {
+      //     if (row.DONE) console.log(row.DESCRIPTION, "is done");
+      //     else console.log(row.DESCRIPTION, "is NOT done");
+      //   }
+      //   await rs.close();
+      // }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       resp = `Error: ${error.message}`;
       logger.error(resp);
@@ -127,3 +130,8 @@ export async function checkOracle(checkOracle = false): Promise<string> {
   logger.info(resp);
   return resp;
 }
+
+export const getPackageJson = () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  return require("../../package.json");
+};

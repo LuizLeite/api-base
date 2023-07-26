@@ -8,10 +8,8 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { loadEnvs, connectMongo } from "./util";
+import { loadEnvs, connectMongo, getPackageJson } from "./util";
 import healthRoute from "./routes/health";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pck = require("../package.json");
 
 loadEnvs();
 connectMongo();
@@ -29,11 +27,15 @@ app.use("/actuator", healthRoute);
 app.get("/", (req: Request, res: Response) => {
   res
     .status(200)
-    .send(`Welcome to a <b>api-base-node</b> - version: ${pck.version}`);
+    .send(
+      `Welcome to a <b>api-base-node</b> - version: ${getPackageJson().version}`
+    );
 });
 
 app.listen(process.env.PORT, () =>
   console.log(
-    `api-base-node - listening on port ${process.env.PORT} - version: ${pck.version}`
+    `api-base-node - listening on port ${process.env.PORT} - version: ${
+      getPackageJson().version
+    }`
   )
 );
