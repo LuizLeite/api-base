@@ -43,7 +43,7 @@ export async function checkMongo(checkMongo = false): Promise<string> {
   return resp;
 }
 
-export async function checkPostgre(checkPostgres = false): Promise<string> {
+export async function checkPostgres(checkPostgres = false): Promise<string> {
   let resp = "";
 
   if (checkPostgres) {

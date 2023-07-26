@@ -2,7 +2,7 @@ import express from "express";
 import os from "os";
 import process from "process";
 import pino from "pino";
-import { checkMongo, checkPostgre, checkOracle } from "../util";
+import { checkMongo, checkPostgres, checkOracle } from "../util";
 
 const logger = pino();
 const router = express.Router();
@@ -34,7 +34,7 @@ router.get("/health", async (req, res) => {
   };
 
   resp.mongoDB = await checkMongo(true);
-  resp.postgreSQL = await checkPostgre(true);
+  resp.postgreSQL = await checkPostgres(true);
   resp.oracle = await checkOracle(true);
 
   res.status(200).json(resp);
