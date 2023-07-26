@@ -100,6 +100,7 @@ export async function checkOracle(checkOracle = false): Promise<string> {
       await oracledb.initOracleClient();
       conn = await oracledb.getConnection(options);
       const result = await conn.execute("SELECT CURRENT_DATE FROM DUAL");
+      resp = "Oracle running but cant get hour";
       if (result?.rows?.length) resp = "Oracle running OK";
 
       // const result2 = await conn.execute(
