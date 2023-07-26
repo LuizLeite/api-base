@@ -1,7 +1,8 @@
 import dotenv, { DotenvConfigOutput } from "dotenv";
 import User from "../models/User";
-import { Pool, Client, QueryResult } from "pg";
 import pino from "pino";
+import mongoose from "mongoose";
+import { Pool, Client, QueryResult } from "pg";
 import oracledb from "oracledb";
 
 const logger = pino();
@@ -13,6 +14,10 @@ export const loadEnvs = () => {
   if (myEnvs && myEnvs?.parsed)
     Object.entries(myEnvs.parsed).forEach((el) => (process.env[el[0]] = el[1]));
 };
+
+export async function connectMongo() {
+  await mongoose.connect(`${process.env.MONGO_URL || ""}`);
+}
 
 export async function checkMongo(checkMongo = false): Promise<string> {
   let resp = "";
@@ -82,13 +87,11 @@ export async function checkOracle(checkOracle = false): Promise<string> {
       const options = {
         user: process.env.AERO_USER,
         password: process.env.AERO_PASS,
-        connectionString: process.env.AERO_HOST,
-        mode: oracledb.SYSDBA,
+        connectString: process.env.AERO_HOST,
       };
-
-      console.log("AERO_HOST:", process.env.AERO_HOST);
-      console.log("AERO_USER:", process.env.AERO_USER);
-      console.log("AERO_PASS:", process.env.AERO_PASS);
+      // console.log("AERO_HOST:", process.env.AERO_HOST);
+      // console.log("AERO_USER:", process.env.AERO_USER);
+      // console.log("AERO_PASS:", process.env.AERO_PASS);
       await oracledb.initOracleClient();
       conn = await oracledb.getConnection(options);
       console.log("passei 2");

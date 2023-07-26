@@ -8,18 +8,18 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { loadEnvs } from "./util";
+import { loadEnvs, connectMongo } from "./util";
 import healthRoute from "./routes/health";
-import mongoose from "mongoose";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pck = require("../package.json");
 
 loadEnvs();
-mongoose.connect(`${process.env.MONGO_URL || ""}`);
+connectMongo();
 
 const app = express();
 
 // middlewares
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.json());
 
 // endpoints
@@ -27,9 +27,13 @@ app.use("/actuator", healthRoute);
 
 // optional - used to browser response
 app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({ message: "Welcome to a api-base-node" });
+  res
+    .status(200)
+    .send(`Welcome to a <b>api-base-node</b> - version: ${pck.version}`);
 });
 
 app.listen(process.env.PORT, () =>
-  console.log(`Listening on port ${process.env.PORT}!`)
+  console.log(
+    `api-base-node - listening on port ${process.env.PORT} - version: ${pck.version}`
+  )
 );
