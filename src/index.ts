@@ -10,9 +10,7 @@ import express from "express";
 import { loadEnvs, connectMongo, getPackageJson } from "./util";
 import rootRoute from "./routes/_root";
 import healthRoute from "./routes/health";
-
-loadEnvs();
-connectMongo();
+import { runSchedules } from "./schedules";
 
 const app = express();
 
@@ -23,6 +21,10 @@ app.use(express.json());
 // endpoints
 app.use("/", rootRoute);
 app.use("/actuator", healthRoute);
+
+loadEnvs();
+connectMongo();
+runSchedules();
 
 app.listen(process.env.PORT, () =>
   console.log(

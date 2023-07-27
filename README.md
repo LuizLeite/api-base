@@ -39,3 +39,37 @@
 # to debug
 
 - at vscode, mark a break point at line where you like
+
+# cron schedule
+
+- ┌────────────── second (optional)
+- │ ┌──────────── minute
+- │ │ ┌────────── hour
+- │ │ │ ┌──────── day of month
+- │ │ │ │ ┌────── month
+- │ │ │ │ │ ┌──── day of week
+- │ │ │ │ │ │
+- │ │ │ │ │ │
+  ? ? ? ? ? ? -> number or asterisk
+
+https://crontab.guru/#0_0_*__\__
+
+# ENVIRONMENTS VARIABLES
+
+PORT=
+PINO_LOG_LEVEL=
+
+MONGO_URL=
+
+PGUSER=
+PGHOST=
+PGPASSWORD=
+PGDATABASE=
+PGPORT=
+
+AERO_HOST=
+AERO_USER=
+AERO_PASS=
+
+CRON=
+CRON_WORKER=
